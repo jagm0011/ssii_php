@@ -1,0 +1,30 @@
+<?
+require_once("usuario.php");
+require_once("rating.php");
+class modelo{
+	private $configDB;
+	private $db;	
+	private $usuario;
+	private $rating;
+			
+	public function modelo(){
+		$this->configDB=array();
+		$this->configDB['server']='localhost';
+		$this->configDB['user']='root';
+		$this->configDB['pass']='';
+		$this->configDB['dataBase']='SI_DB';	
+		$this->db=0;
+		$this->usuario=new usuario();		
+		$this->rating=new rating();
+		$this->init();
+		
+	}	
+	function init(){
+			$this->db = mysql_connect($this->configDB['server'], $this->configDB['user'], $this->configDB['pass']) or die("Database error");		
+			mysql_select_db($this->configDB['dataBase'], $this->db);
+	}
+	
+	
+}
+
+?>

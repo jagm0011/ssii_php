@@ -1,0 +1,10 @@
+<?
+	require("controlador.php");
+require("vista.php");
+require("modelo.php");
+
+$vista=new vista();
+$modelo=new modelo();
+
+$controlador=new controlador($vista,$modelo);
+?>
