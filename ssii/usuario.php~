@@ -1,5 +1,5 @@
 <?
-class usuario(){
+class usuario{
 		
 	public function usuario(){
 		

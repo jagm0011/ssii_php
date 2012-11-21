@@ -1,49 +1,53 @@
 <?
 class KNN {
+				//estructura con las similitudes
     private $vecinosSimilitudes;
    
-    private $valoraciones;
+    /* matriz con $matrizRating[i][j]
+    * i= idItem
+    * j= idUser
+    */
+    private $matrizRating;
     //parametros configuracion. Por defecto PCC
-    private PCC;
-    private SC;
+    // k vecinos
+    private $PCC;
+    private $SC;
+    private $k;
     
-    public function KNN($valoracion){
-        $this->valoraciones=$valoracion;
+    public function KNN($matrizRating, $k){
+        $this->matrizRating=$matrizRating;
         $this->vecinosSimilitudes=array();
         $SC=0;
         $PCC=1;
+        $this->k=$k;
     }
 
     public function calculoVecinos(){
         $con=0;
         //Empezamos recorriendo el vector con las valoraciones
-        while($con<count($valoraciones)){
-            $vActual = new valoracion();
-            $vActual = valoraciones.get(con);
-            $con2=con+1;
-            while($con2<count($this->valoraciones)){
-                $vActualDos=new valoracion(); ;
-                $vActualDos = valoraciones.get($con2);
-                float similitud=calculaSimilitud($vActual, $vActualDos);
+        while($con<count($this->matrizRating)){
+        				//vector con todos los usuario que han valorado esa pelicula
+            $valActual = $this->matrizRating[$con];
+            
+            $con2=$con+1;
+            while($con2<count($this->matrizRating)){
+                $valActualDos=$this->matrizRating[$con2]; ;
+                
+                $similitud=calculaSimilitud($vActual, $vActualDos);
                 $con2++;
             }
             
-            con++;
+            $con++;
         }
     }
-    //Culcula la similitud entre 2 peliculas.
-    private float calculaSimilitud(Valoracion v1, Valoracion v2){
-        Vector<Integer> vectorPuntuaciones1;
-        Vector<Integer> vectorPuntuaciones2;
-        vectorPuntuaciones1=v1.getPuntuacion();
-        vectorPuntuaciones2=v2.getPuntuacion();
-        //quiere decir que tienen valoraciones. Si alguno no tiene, la similitud es 0
-        if(vectorPuntuaciones1.size()>0 && vectorPuntuaciones2.size()>0){
-            if(PCC==1)
-                return PCC(vectorPuntuaciones1,vectorPuntuaciones2);
-            else
-                return SC(vectorPuntuaciones1,vectorPuntuaciones2);
-        }
+   
+    //Calcula la similitud entre 2 peliculas.
+    private function calculaSimilitud($v1, $v2){        
+        //quiere decir que tienen valoraciones. Si alguno no tiene, la similitud es 0       
+         if($this->PCC==1)
+             return PCC($v1,$v2);
+         else
+             return SC($v1,$v2);        
         return 0;
     }
   
@@ -56,67 +60,55 @@ class KNN {
      * 1<r<0 correlacion negativa
      * r=-1 correlacion negativa perfecta
      */
-    public float PCC(Vector<Integer> v1, Vector<Integer> v2){
-        float mediaValoracionItem1=calculaMedia(v1);
-        float mediaValoracionItem2=calculaMedia(v2);
+     
+    public function PCC($v1, $v2){
+        $mediaValoracionItem1=calculaMedia($v1);
+        $mediaValoracionItem2=calculaMedia($v2);
         
        //Calculo numerador
-        float sumatoriaNumerador=0;    
-        for($con=0;con<v1.size();con++){
-            sumatoriaNumerador+=(v1.get(con)-mediaValoracionItem1)*(v2.get(con)-mediaValoracionItem2);                        
+        $sumatoriaNumerador=0;    
+        for($con=0;$con<count($v1);$con++){
+            $sumatoriaNumerador+=($v1[$con]-$mediaValoracionItem1)*($v2[$con]-$mediaValoracionItem2);                        
         }
         
         //Calculo denominador
-        float sumatoriaDenominador1=0;    
-        for($con=0;con<v1.size();con++){
-            sumatoriaDenominador1+=(v1.get(con)-mediaValoracionItem1)*(v1.get(con)-mediaValoracionItem1);            
+        $sumatoriaDenominador1=0;    
+        for($con=0;$con<count($v1);$con++){
+            $sumatoriaDenominador1+=($v1[$con]-$mediaValoracionItem1)*($v2[$con]-$mediaValoracionItem2);            
         }
        
-        float sumatoriaDenominador2=0;    
-        for($con=0;con<v2.size();con++){
-            sumatoriaDenominador2+=(v2.get(con)-mediaValoracionItem2)*(v2.get(con)-mediaValoracionItem2);            
+        $sumatoriaDenominador2=0;    
+        for($con=0;$con<count($v2);$con++){
+            $sumatoriaDenominador2+=($v2[$con]-$mediaValoracionItem2)*($v2[$con]-$mediaValoracionItem2);            
         }
         
-        float sumatoriaDenominador=(float)Math.sqrt(sumatoriaDenominador1*sumatoriaDenominador2);
+        $sumatoriaDenominador=sqrt($sumatoriaDenominador1*$sumatoriaDenominador2);
         //return
-        float resultado=sumatoriaNumerador/sumatoriaDenominador;
+        $resultado=$sumatoriaNumerador/$sumatoriaDenominador;
         //hay que hacer esta cuenta para transformala a medida de similitud
-        return (resultado+1)/2;
+        return ($resultado+1)/2;
     }
     
-    public float calculaMedia(Vector<Integer> v){
-        float media=0;
-        for($con=0;con<v.size();con++){
-            media+=v.get(con);
+    public function calculaMedia($v){
+        $media=0;
+        for($con=0;$con<count($v);$con++){
+            $media+=$v[$con];
         }
-        media=media/v.size();
-        return media;
+        $media=$media/count($v);
+        return $media;
     }
+    
     //Similitud del coseno
     /*
      * r=0 minima similitus
      * r=1 maxima similitud
-     */
+     *//*
     public float SC(Vector<Integer> v1, Vector<Integer> v2){
         
         return 0;
     }
     
-    /**
-     * @return the vecinos
-     */
-    public Vector<Vector<celdaKNN>> getVecinos() {
-        return $this->vecinosSimilitudes;
-    }
-
-    /**
-     * @param vecinos the vecinos to set
-     */
-    public void setVecinos(Vector<Vector<celdaKNN>> vecinos) {
-        $this->$this->vecinosSimilitudes = vecinos;
-    }
-
    
-    
+*/
 }
 ?>

@@ -1,6 +1,6 @@
 <?
 require_once("usuario.php");
-require_once("rating.php");
+require_once("pelicula.php");
 class modelo{
 	private $configDB;
 	private $db;	
